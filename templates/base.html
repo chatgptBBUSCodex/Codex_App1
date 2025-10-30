@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Saigon Music Piano{% endblock %}</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Lato:wght@300;400;700&family=Playfair+Display:wght@500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+    <div id="menu-toggle" class="menu-toggle">Menu</div>
+    <aside id="slide-menu" class="slide-menu">
+        <button id="close-menu" class="close-menu" aria-label="Đóng Menu">&times;</button>
+        <nav>
+            <ul>
+                <li><a href="{{ url_for('hanh_trinh') }}">Hành Trình Bắt Đầu</a></li>
+                <li><a href="{{ url_for('piano_san_sang') }}">Piano Sẵn Sàng</a></li>
+                <li><a href="{{ url_for('piano_theo_yeu_cau') }}">Piano Theo Yêu Cầu</a></li>
+                <li><a href="{{ url_for('dich_vu_cao_cap') }}">Dịch Vụ Cao Cấp</a></li>
+                <li><a href="{{ url_for('showroom') }}">Showroom</a></li>
+            </ul>
+        </nav>
+    </aside>
+
+    {% block main %}{% endblock %}
+
+    <div id="consultation-modal" class="modal" aria-hidden="true" role="dialog">
+        <div class="modal-content">
+            <button class="modal-close" id="modal-close" aria-label="Đóng">&times;</button>
+            <h2>Sẵn Sàng Trải Nghiệm? Hãy Đặt Lịch Hẹn Cùng Chúng Tôi</h2>
+            <form id="inquiry-form" method="post" action="{{ url_for('create_inquiry') }}">
+                {{ form.csrf_token }}
+                <div class="form-group">
+                    <label for="full_name">Họ và Tên bạn</label>
+                    {{ form.full_name(id='full_name', placeholder='Nhập họ tên của bạn', required=True) }}
+                    <div class="error" data-error-for="full_name"></div>
+                </div>
+                <div class="form-group">
+                    <label for="email">Email</label>
+                    {{ form.email(id='email', placeholder='Bạn@vidu.com', required=True, type='email') }}
+                    <div class="error" data-error-for="email"></div>
+                </div>
+                <div class="form-group">
+                    <label for="phone">Số điện thoại</label>
+                    {{ form.phone(id='phone', placeholder='0123456789', required=True, type='tel', pattern='\\d{8,15}') }}
+                    <div class="error" data-error-for="phone"></div>
+                </div>
+                <div class="form-group">
+                    <span>Loại Piano Quan Tâm</span>
+                    <div class="piano-type-grid" id="piano-type-grid">
+                        {% for piano in pianos %}
+                        <button type="button" class="piano-type-btn" data-slug="{{ piano.slug }}">{{ piano.name }}</button>
+                        {% endfor %}
+                    </div>
+                    {{ form.piano_type(id='piano_type', required=True) }}
+                    <div class="error" data-error-for="piano_type"></div>
+                </div>
+                <button type="submit" class="submit-btn">Gửi Yêu Cầu</button>
+            </form>
+        </div>
+    </div>
+
+    <div id="toast" class="toast" role="status" aria-live="polite"></div>
+
+    <script src="{{ url_for('static', filename='js/main.js') }}" defer></script>
+</body>
+</html>
